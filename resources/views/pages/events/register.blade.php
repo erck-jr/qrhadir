@@ -25,7 +25,27 @@
         </p>
     </div>
 
-    @if(isset($registrationStatus) && $registrationStatus !== 'active')
+    @if($event->type === 'hybrid' && empty($mode))
+        <div class="text-center py-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-6">Silakan Pilih Mode Kehadiran Anda</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{{ request()->fullUrlWithQuery(['mode' => 'online']) }}" class="flex flex-col items-center p-6 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 hover:border-blue-300 transition cursor-pointer group">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                        <span class="material-icons text-blue-500 text-3xl">laptop_mac</span>
+                    </div>
+                    <span class="font-bold text-blue-800">Hadir Daring (Online)</span>
+                    <span class="text-xs text-blue-600 mt-2">Absensi akan otomatis tercatat saat form disubmit pada jam acara.</span>
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['mode' => 'offline']) }}" class="flex flex-col items-center p-6 bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 hover:border-green-300 transition cursor-pointer group">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                        <span class="material-icons text-green-500 text-3xl">storefront</span>
+                    </div>
+                    <span class="font-bold text-green-800">Hadir Luring (Offline)</span>
+                    <span class="text-xs text-green-600 mt-2">Dapatkan QR Tiket untuk discan panitia di lokasi acara.</span>
+                </a>
+            </div>
+        </div>
+    @elseif(isset($registrationStatus) && $registrationStatus !== 'active')
         <div class="text-center py-6">
             @if($registrationStatus === 'not_started')
                 <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -58,6 +78,9 @@
 
         <form x-show="!isLoading" action="{{ route('event.register.store', $event->slug) }}" method="POST" @submit.prevent="submitForm">
         @csrf
+        @if(isset($mode) && $mode)
+            <input type="hidden" name="mode" value="{{ $mode }}">
+        @endif
 
         {{-- Step 1: Cek Identifier (Email/HP) --}}
         <div x-show="step === 1">

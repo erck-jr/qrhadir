@@ -51,6 +51,10 @@ class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             'Telepon'
         ];
 
+        if ($this->event->type === 'hybrid') {
+            $headers[] = 'Mode Kehadiran';
+        }
+
         foreach ($this->dates as $date) {
             $headers[] = 'Kehadiran ' . $date;
         }
@@ -70,6 +74,10 @@ class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             $eventParticipant->participant?->email ?? '-',
             $eventParticipant->participant?->phone ?? '-'
         ];
+
+        if ($this->event->type === 'hybrid') {
+            $row[] = $eventParticipant->attendance_mode ? ucfirst($eventParticipant->attendance_mode) : '-';
+        }
 
         foreach ($this->dates as $date) {
             $attendance = $eventParticipant->attendances->first(function ($att) use ($date) {

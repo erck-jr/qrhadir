@@ -56,6 +56,13 @@
                                     <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded uppercase">Absensi Berjalan</span>
                                 @endif
                                 <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase">Online</span>
+                            @elseif($event->type === 'hybrid')
+                                @if(now() < $event->start_date)
+                                    <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded uppercase">Pilih Mode</span>
+                                @else
+                                    <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded uppercase">Absensi / Registrasi</span>
+                                @endif
+                                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded uppercase">Hybrid</span>
                             @else
                                 <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded uppercase">Registrasi</span>
                                 <span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded uppercase">Offline</span>

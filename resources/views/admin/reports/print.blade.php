@@ -34,6 +34,9 @@
                 <th class="border border-black p-1 text-center">No</th>
                 <th class="border border-black p-1 text-center">Nama Peserta</th>
                 <th class="border border-black p-1 text-center">Tipe</th>
+                @if($event->type === 'hybrid')
+                    <th class="border border-black p-1 text-center">Mode Kehadiran</th>
+                @endif
                 @foreach($dates as $date)
                     <th class="border border-black p-1 text-center">{{ \Carbon\Carbon::parse($date)->format('d/m') }}</th>
                 @endforeach
@@ -46,6 +49,9 @@
                 <td class="border border-black p-1 text-center">{{ $index + 1 }}</td>
                 <td class="border border-black p-1 text-left">{{ $ep->participant?->name ?? 'Unknown' }}</td>
                 <td class="border border-black p-1 text-center">{{ $ep->participantType?->name ?? '-' }}</td>
+                @if($event->type === 'hybrid')
+                    <td class="border border-black p-1 text-center">{{ $ep->attendance_mode ? ucfirst($ep->attendance_mode) : '-' }}</td>
+                @endif
                 @php $present = false; @endphp
                 @foreach($dates as $date)
                     @php

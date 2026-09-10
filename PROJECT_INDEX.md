@@ -1,7 +1,7 @@
 # Project Index: Absensi QR Code
 
 ## 1. Ikhtisar Proyek
-Aplikasi ini adalah sistem manajemen kehadiran (absensi) dan acara berbasis Laravel. Fitur utamanya mencakup pendaftaran acara publik, pembuatan tiket QR Code, pemindaian kehadiran (kiosk), pembuatan ID Card otomatis, hingga penerbitan dan verifikasi sertifikat. Sistem ini juga memiliki manajemen pengguna dengan peran (Admin dan Super Admin).
+Aplikasi ini adalah sistem manajemen kehadiran (absensi) dan acara berbasis Laravel. Fitur utamanya mencakup pendaftaran acara publik, pembuatan tiket QR Code, pemindaian kehadiran (kiosk), pembuatan ID Card otomatis, hingga penerbitan dan verifikasi sertifikat. Sistem ini juga memiliki manajemen pengguna dengan peran (Admin dan Super Admin). Aplikasi mendukung 3 mode event: **Offline** (menggunakan tiket QR untuk absensi di lokasi), **Online** (absensi otomatis saat registrasi pada jam acara), dan **Hybrid** (peserta dapat memilih untuk hadir secara online atau offline).
 
 ## 2. Dependencies Utama (composer.json)
 - **PHP**: `^8.2`

@@ -35,6 +35,9 @@
             <tr>
                 <th class="px-4 py-3 text-left">Nama Peserta</th>
                 <th class="px-4 py-3 text-left">Tipe</th>
+                @if($event->type === 'hybrid')
+                    <th class="px-4 py-3 text-center">Mode Kehadiran</th>
+                @endif
                 @foreach($dates as $date)
                     <th class="px-4 py-3 text-center whitespace-nowrap">
                         {{ \Carbon\Carbon::parse($date)->format('d M') }}
@@ -54,6 +57,12 @@
                         <x-badge variant="info">{{ $ep->participantType?->name ?? '-' }}</x-badge>
                     </td>
                     
+                    @if($event->type === 'hybrid')
+                        <td class="px-4 py-3 text-center">
+                            {{ $ep->attendance_mode ? ucfirst($ep->attendance_mode) : '-' }}
+                        </td>
+                    @endif
+
                     @foreach($dates as $date)
                         @php
                             // Check attendance for this date
@@ -82,7 +91,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ count($dates) + 3 }}" class="px-4 py-6 text-center text-gray-500">
+                    <td colspan="{{ count($dates) + ($event->type === 'hybrid' ? 4 : 3) }}" class="px-4 py-6 text-center text-gray-500">
                         Belum ada peserta terdaftar.
                     </td>
                 </tr>

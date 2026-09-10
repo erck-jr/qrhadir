@@ -71,11 +71,12 @@ class EventRegistrationController extends Controller
     /**
      * Tampilkan form registrasi untuk public
      */
-    public function show(Event $event)
+    public function show(Request $request, Event $event)
     {
         $registrationStatus = 'active';
+        $mode = $request->query('mode');
 
-        if ($event->type === 'online') {
+        if ($event->type === 'online' || ($event->type === 'hybrid' && $mode === 'online')) {
             if (now() < $event->start_date) {
                 $registrationStatus = 'not_started';
             } elseif (now() > $event->end_date) {
@@ -85,7 +86,7 @@ class EventRegistrationController extends Controller
 
         $participantTypes = $event->participantTypes()->orderBy('name')->get();
 
-        return view('pages.events.register', compact('event', 'participantTypes', 'registrationStatus'));
+        return view('pages.events.register', compact('event', 'participantTypes', 'registrationStatus', 'mode'));
     }
 
     /**
@@ -97,16 +98,22 @@ class EventRegistrationController extends Controller
             abort(404); // Atau redirect error
         }
 
-        $validated = $request->validate([
+        $rules = [
             'name'                => 'required|string|max:255',
             'email'               => 'required|email|max:255',
             'phone'               => 'required|string|max:20',
             'participant_type_id' => 'required|exists:participant_types,id',
-        ]);
+        ];
+
+        if ($event->type === 'hybrid') {
+            $rules['mode'] = 'required|in:online,offline';
+        }
+
+        $validated = $request->validate($rules);
 
         $tokenUuid = $registrationService->registerParticipant($event, $validated);
 
-        if ($event->type === 'online') {
+        if ($event->type === 'online' || ($event->type === 'hybrid' && $validated['mode'] === 'online')) {
             return redirect()->route('event.attendance.success', ['event' => $event->slug, 'qrToken' => $tokenUuid])
                              ->with('success', 'Absensi berhasil dicatat.');
         }

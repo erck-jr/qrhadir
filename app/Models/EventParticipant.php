@@ -15,6 +15,7 @@ class EventParticipant extends Model
         'participant_id',
         'participant_type_id',
         'registered_via',
+        'attendance_mode',
         'registered_at',
     ];
 

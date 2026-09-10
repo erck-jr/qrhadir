@@ -51,8 +51,9 @@ class EventRegistrationService
                 ],
                 [
                     'participant_type_id' => $validatedData['participant_type_id'],
-                    'registered_at'       => now(),
                     'registered_via'      => 'self',
+                    'attendance_mode'     => $validatedData['mode'] ?? null,
+                    'registered_at'       => now(),
                 ]
             );
 
@@ -69,8 +70,8 @@ class EventRegistrationService
             
             $tokenUuid = $qrToken->token;
 
-            // 4. Jika event bertipe online, langsung set ke hadir (Attendance)
-            if ($event->type === 'online') {
+            // 4. Jika event bertipe online atau hybrid (mode online), langsung set ke hadir (Attendance)
+            if ($event->type === 'online' || ($event->type === 'hybrid' && isset($validatedData['mode']) && $validatedData['mode'] === 'online')) {
                 \App\Models\Attendance::firstOrCreate([
                     'event_participant_id' => $eventParticipant->id,
                     'attendance_date'      => now()->toDateString(),
