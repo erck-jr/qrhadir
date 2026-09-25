@@ -67,6 +67,19 @@
                         </div>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Font Teks (Wajib)</label>
+                        <select name="font" class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <option value="">-- Pilih Font --</option>
+                            @foreach($fonts as $f)
+                                <option value="{{ $f }}" {{ ($event->template->font ?? 'Nunito/Nunito-Bold.ttf') == $f ? 'selected' : '' }}>
+                                    {{ $f }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Pilih font yang akan digunakan untuk mencetak nama dan tipe peserta pada sertifikat.</p>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <x-input label="Kota Tanda Tangan (Opsional)" name="signature_city" value="{{ $event->template->signature_city ?? '' }}" placeholder="Contoh: Ambon" />
                         <x-input type="date" label="Tanggal Tanda Tangan" name="signature_date" value="{{ $event->template->signature_date ?? now()->format('Y-m-d') }}" />

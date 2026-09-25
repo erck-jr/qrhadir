@@ -15,6 +15,7 @@ class EventTemplate extends Model
         'signature_date',
         'print_only_name_type',
         'text_color',
+        'font',
     ];
 
     protected $casts = [

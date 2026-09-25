@@ -56,12 +56,23 @@ class CertificateGenerator
         $scale = $width / 2000;
         
         // Colors
-        $customColor = $template->text_color ? str_replace('#', '', $template->text_color) : '000000';
         $black = $customColor;
         $darkGrey = $customColor;
         $primaryColor = $customColor;
         
         $printOnlyNameType = (bool) $template->print_only_name_type;
+
+        // Determine Font Path
+        $selectedFont = $template->font ?? 'Nunito/Nunito-Bold.ttf';
+        $fontPath = public_path('assets/fonts/' . $selectedFont);
+        // Fallbacks if not exists
+        if (!file_exists($fontPath)) {
+            if (file_exists(public_path('assets/fonts/Nunito/Nunito-Bold.ttf'))) {
+                $fontPath = public_path('assets/fonts/Nunito/Nunito-Bold.ttf');
+            } else {
+                $fontPath = public_path('assets/fonts/Nunito-Bold.ttf');
+            }
+        }
 
         // 1. Event Logo (Top Center)
         // Position: 10% from top
@@ -77,16 +88,16 @@ class CertificateGenerator
 
         // 2. Title "SERTIFIKAT" (Top 25%)
         if (!$printOnlyNameType) {
-            $image->text('SERTIFIKAT', $centerX, (int)($height * 0.25), function ($font) use ($black, $scale) {
-                $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
+            $image->text('SERTIFIKAT', $centerX, (int)($height * 0.25), function ($font) use ($black, $scale, $fontPath) {
+                $font->file($fontPath);
                 $font->size(75 * $scale);
                 $font->color($black);
                 $font->align('center');
             });
 
             // "Diberikan kepada" (Top 30%)
-            $image->text('Diberikan kepada', $centerX, (int)($height * 0.30), function ($font) use ($darkGrey, $scale) {
-                $font->file(public_path('assets/fonts/Nunito-Light.ttf'));
+            $image->text('Diberikan kepada', $centerX, (int)($height * 0.30), function ($font) use ($darkGrey, $scale, $fontPath) {
+                $font->file($fontPath);
                 $font->size(40 * $scale);
                 $font->color($darkGrey);
                 $font->align('center');
@@ -95,8 +106,8 @@ class CertificateGenerator
 
         // 3. Participant Name (Top 57%) - The Highlight
         $participantName = strtoupper($participant->participant->name);
-        $image->text($participantName, $centerX, (int)($height * 0.55), function ($font) use ($black, $scale) {
-            $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
+        $image->text($participantName, $centerX, (int)($height * 0.55), function ($font) use ($black, $scale, $fontPath) {
+            $font->file($fontPath);
             $font->size(70 * $scale);
             $font->color($black);
             $font->align('center');
@@ -118,8 +129,8 @@ class CertificateGenerator
             $bodyText = "{$customText} {$type}\npada Event {$eventName}\nTanggal {$dateRange}\ndi " . $event->location;
         }
 
-        $image->text($bodyText, $centerX, (int)($height * 0.58), function ($font) use ($darkGrey, $scale) {
-            $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
+        $image->text($bodyText, $centerX, (int)($height * 0.58), function ($font) use ($darkGrey, $scale, $fontPath) {
+            $font->file($fontPath);
             $font->size(35 * $scale);
             $font->color($darkGrey);
             $font->align('center');
@@ -159,16 +170,16 @@ class CertificateGenerator
                 // If it's the last signature (right-most), place date above it?
                 // Or if only 1 signature, place above it.
                 if (!empty($dateText) && ($index == $sigCount - 1)) {
-                    $image->text($dateText, $xPos, $sigY - (int)(40 * $scale), function($font) use ($darkGrey, $scale) {
-                        $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
+                    $image->text($dateText, $xPos, $sigY - (int)(40 * $scale), function($font) use ($darkGrey, $scale, $fontPath) {
+                        $font->file($fontPath);
                         $font->size(28 * $scale);
                         $font->color($darkGrey);
                         $font->align('center');
                     });
                 }
                 // Title/Jabatan
-                $image->text($sig->jabatan, $xPos, $sigY, function($font) use ($darkGrey, $scale) {
-                   $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
+                $image->text($sig->jabatan, $xPos, $sigY, function($font) use ($darkGrey, $scale, $fontPath) {
+                   $font->file($fontPath);
                    $font->size(35 * $scale);
                    $font->color($darkGrey);
                    $font->align('center');
@@ -188,8 +199,8 @@ class CertificateGenerator
 
                 // Name (Below image, approx +180px gap scaled)
                 $nameY = $sigY + (int)(180 * $scale);
-                $image->text($sig->name, $xPos, $nameY, function($font) use ($black, $scale) {
-                   $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
+                $image->text($sig->name, $xPos, $nameY, function($font) use ($black, $scale, $fontPath) {
+                   $font->file($fontPath);
                    $font->size(35 * $scale);
                    $font->color($black);
                    $font->align('center');
@@ -197,8 +208,8 @@ class CertificateGenerator
 
                 // NIP
                 if ($sig->nip) {
-                    $image->text("NIP. " . $sig->nip, $xPos, $nameY + (int)(35 * $scale), function($font) use ($darkGrey, $scale) {
-                       $font->file(public_path('assets/fonts/Nunito-Light.ttf'));
+                    $image->text("NIP. " . $sig->nip, $xPos, $nameY + (int)(35 * $scale), function($font) use ($darkGrey, $scale, $fontPath) {
+                       $font->file($fontPath);
                        $font->size(30 * $scale);
                        $font->color($darkGrey);
                        $font->align('center');

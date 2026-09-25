@@ -41,7 +41,23 @@ class CertificateController extends Controller
             $q->where('event_id', $event->id);
         })->where('status', 'pending')->get();
 
-        return view('admin.certificates.index', compact('event', 'reports'));
+        // Get available fonts
+        $fonts = [];
+        $fontsDir = public_path('assets/fonts');
+        if (is_dir($fontsDir)) {
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($fontsDir));
+            foreach ($iterator as $file) {
+                if ($file->isFile() && strtolower($file->getExtension()) === 'ttf') {
+                    // Get path relative to assets/fonts
+                    $relativePath = str_replace($fontsDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $relativePath = str_replace('\\', '/', $relativePath); // normalize slashes
+                    $fonts[] = $relativePath;
+                }
+            }
+        }
+        sort($fonts);
+
+        return view('admin.certificates.index', compact('event', 'reports', 'fonts'));
     }
 
     /**
@@ -58,6 +74,7 @@ class CertificateController extends Controller
             'certificate_texts' => 'array', 
             'print_only_name_type' => 'boolean',
             'text_color' => 'nullable|string|max:20',
+            'font' => 'nullable|string',
         ]);
 
         // Toggle Status
@@ -98,7 +115,8 @@ class CertificateController extends Controller
                     'signature_city' => $request->signature_city,
                     'signature_date' => $request->signature_date,
                     'print_only_name_type' => $request->has('print_only_name_type'),
-                    'text_color' => $request->text_color ?? '#000000'
+                    'text_color' => $request->text_color ?? '#000000',
+                    'font' => $request->font ?? 'Nunito/Nunito-Bold.ttf'
                 ] 
             );
         } else {
@@ -110,7 +128,8 @@ class CertificateController extends Controller
                     'signature_city' => $request->signature_city,
                     'signature_date' => $request->signature_date,
                     'print_only_name_type' => $request->has('print_only_name_type'),
-                    'text_color' => $request->text_color ?? '#000000'
+                    'text_color' => $request->text_color ?? '#000000',
+                    'font' => $request->font ?? 'Nunito/Nunito-Bold.ttf'
                 ]
             );
         }
