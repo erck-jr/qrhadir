@@ -33,6 +33,19 @@ class EventParticipantController extends Controller
         return view('admin.participant.index', compact('event', 'participants', 'availableParticipants', 'participantTypes'));
     }
 
+    public function print(Event $event)
+    {
+        $participants = $event->participants()
+            ->with([
+                'participant' => function($q) { $q->withoutGlobalScope('ownership'); },
+                'participantType' => function($q) { $q->withoutGlobalScope('ownership'); }
+            ])
+            ->orderByRaw('(SELECT name FROM participants WHERE participants.id = event_participants.participant_id)')
+            ->get();
+
+        return view('admin.participant.print', compact('event', 'participants'));
+    }
+
     public function store(Request $request, Event $event)
     {
         $request->validate([

@@ -98,6 +98,9 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     Route::get('events/{event}/participants', [EventParticipantController::class, 'index'])
             ->name('events.participants.index');
+            
+    Route::get('events/{event}/participants/print', [EventParticipantController::class, 'print'])
+            ->name('events.participants.print');
 
     Route::get('events/{event}/participants/create', [EventParticipantController::class, 'create'])
         ->name('events.participants.create');

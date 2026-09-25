@@ -56,6 +56,7 @@ class CertificateGenerator
         $scale = $width / 2000;
         
         // Colors
+        $customColor = $template->text_color ? str_replace('#', '', $template->text_color) : '000000';
         $black = $customColor;
         $darkGrey = $customColor;
         $primaryColor = $customColor;
