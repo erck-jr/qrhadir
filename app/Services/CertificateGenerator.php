@@ -95,7 +95,7 @@ class CertificateGenerator
 
         // 3. Participant Name (Top 57%) - The Highlight
         $participantName = strtoupper($participant->participant->name);
-        $image->text($participantName, $centerX, (int)($height * 0.57), function ($font) use ($black, $scale) {
+        $image->text($participantName, $centerX, (int)($height * 0.55), function ($font) use ($black, $scale) {
             $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
             $font->size(70 * $scale);
             $font->color($black);
@@ -118,7 +118,7 @@ class CertificateGenerator
             $bodyText = "{$customText} {$type}\npada Event {$eventName}\nTanggal {$dateRange}\ndi " . $event->location;
         }
 
-        $image->text($bodyText, $centerX, (int)($height * 0.60), function ($font) use ($darkGrey, $scale) {
+        $image->text($bodyText, $centerX, (int)($height * 0.58), function ($font) use ($darkGrey, $scale) {
             $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
             $font->size(35 * $scale);
             $font->color($darkGrey);
