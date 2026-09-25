@@ -93,16 +93,16 @@ class CertificateGenerator
             });
         }
 
-        // 3. Participant Name (Top 40%) - The Highlight
+        // 3. Participant Name (Top 47%) - The Highlight
         $participantName = strtoupper($participant->participant->name);
-        $image->text($participantName, $centerX, (int)($height * 0.40), function ($font) use ($black, $scale) {
+        $image->text($participantName, $centerX, (int)($height * 0.47), function ($font) use ($black, $scale) {
             $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
             $font->size(70 * $scale);
             $font->color($black);
             $font->align('center');
         });
 
-        // 4. Body Text (Top 55%)
+        // 4. Body Text (Top 52%)
         // "atas partisipasinya sebagai [TYPE] pada Event [EVENT_NAME]..."
         $type = strtoupper($participant->participantType->name);
         $customText = $participant->participantType->certificate_text ?? "atas partisipasinya sebagai";
@@ -118,7 +118,7 @@ class CertificateGenerator
             $bodyText = "{$customText} {$type}\npada Event {$eventName}\nTanggal {$dateRange}\ndi " . $event->location;
         }
 
-        $image->text($bodyText, $centerX, (int)($height * 0.55), function ($font) use ($darkGrey, $scale) {
+        $image->text($bodyText, $centerX, (int)($height * 0.52), function ($font) use ($darkGrey, $scale) {
             $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
             $font->size(35 * $scale);
             $font->color($darkGrey);
@@ -166,7 +166,6 @@ class CertificateGenerator
                         $font->align('center');
                     });
                 }
-
                 // Title/Jabatan
                 $image->text($sig->jabatan, $xPos, $sigY, function($font) use ($darkGrey, $scale) {
                    $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
