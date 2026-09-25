@@ -56,6 +56,8 @@ class CertificateController extends Controller
             'signature_city' => 'nullable|string|max:100',
             'signature_date' => 'nullable|date',
             'certificate_texts' => 'array', 
+            'print_only_name_type' => 'boolean',
+            'text_color' => 'nullable|string|max:20',
         ]);
 
         // Toggle Status
@@ -94,7 +96,9 @@ class CertificateController extends Controller
                     'template_image' => 'assets/images/sertifikat/' . $filename,
                     'use_event_logo' => $request->has('use_event_logo'),
                     'signature_city' => $request->signature_city,
-                    'signature_date' => $request->signature_date
+                    'signature_date' => $request->signature_date,
+                    'print_only_name_type' => $request->has('print_only_name_type'),
+                    'text_color' => $request->text_color ?? '#000000'
                 ] 
             );
         } else {
@@ -104,7 +108,9 @@ class CertificateController extends Controller
                 [
                     'use_event_logo' => $request->has('use_event_logo'),
                     'signature_city' => $request->signature_city,
-                    'signature_date' => $request->signature_date
+                    'signature_date' => $request->signature_date,
+                    'print_only_name_type' => $request->has('print_only_name_type'),
+                    'text_color' => $request->text_color ?? '#000000'
                 ]
             );
         }

@@ -56,39 +56,42 @@ class CertificateGenerator
         $scale = $width / 2000;
         
         // Colors
-        $black = '000000';
-        $darkGrey = '333333';
-        $primaryColor = '000000'; // Could be dynamic
+        $customColor = $template->text_color ? str_replace('#', '', $template->text_color) : '000000';
+        $black = $customColor;
+        $darkGrey = $customColor;
+        $primaryColor = $customColor;
+        
+        $printOnlyNameType = (bool) $template->print_only_name_type;
 
         // 1. Event Logo (Top Center)
         // Position: 10% from top
-        if ($template->use_event_logo && $event->logo) {
+        if (!$printOnlyNameType && $template->use_event_logo && $event->logo) {
             $logoPath = public_path('assets/images/event-logo/' . $event->logo);
             if (file_exists($logoPath)) {
                 $logo = $this->manager->read($logoPath);
-                $logoSize = 200 * $scale;
-                $logo->resize($logoSize, $logoSize, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
+                $logoSize = (int)(200 * $scale);
+                $logo->scale(height: $logoSize);
                 $image->place($logo, 'top-center', 0, (int)($height * 0.05));
             }
         }
 
         // 2. Title "SERTIFIKAT" (Top 25%)
-        $image->text('SERTIFIKAT', $centerX, (int)($height * 0.25), function ($font) use ($black, $scale) {
-            $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
-            $font->size(75* $scale);
-            $font->color($black);
-            $font->align('center');
-        });
+        if (!$printOnlyNameType) {
+            $image->text('SERTIFIKAT', $centerX, (int)($height * 0.25), function ($font) use ($black, $scale) {
+                $font->file(public_path('assets/fonts/Nunito-Bold.ttf'));
+                $font->size(75 * $scale);
+                $font->color($black);
+                $font->align('center');
+            });
 
-        // "Diberikan kepada" (Top 30%)
-        $image->text('Diberikan kepada', $centerX, (int)($height * 0.30), function ($font) use ($darkGrey, $scale) {
-            $font->file(public_path('assets/fonts/Nunito-Light.ttf'));
-            $font->size(40 * $scale);
-            $font->color($darkGrey);
-            $font->align('center');
-        });
+            // "Diberikan kepada" (Top 30%)
+            $image->text('Diberikan kepada', $centerX, (int)($height * 0.30), function ($font) use ($darkGrey, $scale) {
+                $font->file(public_path('assets/fonts/Nunito-Light.ttf'));
+                $font->size(40 * $scale);
+                $font->color($darkGrey);
+                $font->align('center');
+            });
+        }
 
         // 3. Participant Name (Top 40%) - The Highlight
         $participantName = strtoupper($participant->participant->name);
@@ -103,14 +106,17 @@ class CertificateGenerator
         // "atas partisipasinya sebagai [TYPE] pada Event [EVENT_NAME]..."
         $type = strtoupper($participant->participantType->name);
         $customText = $participant->participantType->certificate_text ?? "atas partisipasinya sebagai";
-        // Wrapped text needs careful handling or newline insertion
-        $eventName = strtoupper($event->name);
-        $dateRange = $event->start_date->translatedFormat('d F Y');
-        if($event->start_date->format('Y-m-d') !== $event->end_date->format('Y-m-d')){
-             $dateRange .= " - " . $event->end_date->translatedFormat('d F Y');
-        }
         
-        $bodyText = "{$customText} {$type}\npada Event {$eventName}\nTanggal {$dateRange}\ndi " . $event->location;
+        if ($printOnlyNameType) {
+            $bodyText = "{$customText} {$type}";
+        } else {
+            $eventName = strtoupper($event->name);
+            $dateRange = $event->start_date->translatedFormat('d F Y');
+            if($event->start_date->format('Y-m-d') !== $event->end_date->format('Y-m-d')){
+                 $dateRange .= " - " . $event->end_date->translatedFormat('d F Y');
+            }
+            $bodyText = "{$customText} {$type}\npada Event {$eventName}\nTanggal {$dateRange}\ndi " . $event->location;
+        }
 
         $image->text($bodyText, $centerX, (int)($height * 0.55), function ($font) use ($darkGrey, $scale) {
             $font->file(public_path('assets/fonts/Nunito-Medium.ttf'));
@@ -121,9 +127,10 @@ class CertificateGenerator
         });
 
         // 5. Signatures (Bottom 20%, roughly Y=80%)
-        $signatures = $event->signatures;
-        if ($signatures->count() > 0) {
-            $sigCount = $signatures->count();
+        if (!$printOnlyNameType) {
+            $signatures = $event->signatures;
+            if ($signatures->count() > 0) {
+                $sigCount = $signatures->count();
             // Calculate spacing based on count
             // width / (count + 1) gives centered segments
             $spacing = $width / ($sigCount + 1);
@@ -173,7 +180,7 @@ class CertificateGenerator
                      $sigPath = storage_path('app/public/' . $sig->signature_image);
                      if (file_exists($sigPath)) {
                          $sigImg = $this->manager->read($sigPath);
-                         $sigImg->resize(null, $imgSize, function($c){ $c->aspectRatio(); });
+                         $sigImg->scale(height: (int)$imgSize);
                          // Place center of image at xPos, sigY + gap
                          // calculate offset
                          $image->place($sigImg, 'top-left', (int)($xPos - ($sigImg->width() / 2)), $sigY + (int)(30 * $scale));
@@ -199,6 +206,7 @@ class CertificateGenerator
                     });
                 }
             }
+        }
         }
 
         // 6. QR Code (Bottom Left)

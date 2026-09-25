@@ -51,6 +51,22 @@
                         </label>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="print_only_name_type" value="1" class="rounded text-orange-600 focus:ring-orange-500" {{ ($event->template && $event->template->print_only_name_type) ? 'checked' : '' }}>
+                            <span class="ml-2 text-sm text-gray-700">Cetak hanya nama dan tipe peserta pada template</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1 ml-6">Jika diaktifkan, sistem hanya akan mencetak Nama dan Tipe Peserta. Teks lain seperti "SERTIFIKAT", logo, dan tanda tangan tidak akan dicetak (diasumsikan sudah ada pada gambar template).</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Warna Teks</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" name="text_color" value="{{ $event->template->text_color ?? '#000000' }}" class="h-10 w-14 rounded cursor-pointer border border-gray-300">
+                            <span class="text-sm text-gray-500">Pilih warna untuk teks yang akan dicetak pada sertifikat</span>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <x-input label="Kota Tanda Tangan (Opsional)" name="signature_city" value="{{ $event->template->signature_city ?? '' }}" placeholder="Contoh: Ambon" />
                         <x-input type="date" label="Tanggal Tanda Tangan" name="signature_date" value="{{ $event->template->signature_date ?? now()->format('Y-m-d') }}" />

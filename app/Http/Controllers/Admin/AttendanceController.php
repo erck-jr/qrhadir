@@ -30,7 +30,12 @@ class AttendanceController extends Controller
         $tokenStr = $request->token;
 
         // Cari tokennya
-        $qrToken = AttendanceQrToken::with(['eventParticipant.participant', 'eventParticipant.event'])
+        $qrToken = AttendanceQrToken::with([
+            'eventParticipant.participant' => function ($query) {
+                $query->withoutGlobalScope('ownership');
+            },
+            'eventParticipant.event'
+        ])
             ->where('token', $tokenStr)
             ->first();
 

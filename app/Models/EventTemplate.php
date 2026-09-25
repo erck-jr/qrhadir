@@ -13,10 +13,13 @@ class EventTemplate extends Model
         'use_event_logo',
         'signature_city',
         'signature_date',
+        'print_only_name_type',
+        'text_color',
     ];
 
     protected $casts = [
         'use_event_logo' => 'boolean',
+        'print_only_name_type' => 'boolean',
     ];
 
     public function event(): BelongsTo

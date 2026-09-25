@@ -16,6 +16,17 @@ Route::get('/', [App\Http\Controllers\Public\PageController::class, 'home'])->na
 Route::get('/events', [App\Http\Controllers\Public\PageController::class, 'events'])->name('events.index');
 Route::get('/portal/check', [App\Http\Controllers\Public\PageController::class, 'checkPortal'])->name('portal.check');
 
+// Temporary route for Shared Hosting without Terminal
+Route::get('/run-cmd', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return 'Storage link created & Migration success!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 use App\Http\Controllers\Public\RegistrationController;
 Route::get('/register-account', [RegistrationController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register-account', [RegistrationController::class, 'register'])->name('register.submit');
